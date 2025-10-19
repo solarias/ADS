@@ -1,0 +1,756 @@
+<html>
+  <head>
+    <title>Aethermancer Dialogue Simulator</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-family: 'sans-serif';
+      }
+      html {
+        width: 100%;
+        height: 100%;
+        background-color: #0C1A32;
+      }
+      body {
+        width: 100%;
+        height: 100%;
+        background-color: #0C1A32;
+
+        color:white;
+      }
+      #left {
+        position: fixed;
+        left: 0;top: 0;
+        z-index: 1;
+        overflow-y: scroll;
+
+        width: 500px;
+        height: calc(100% - 80px);
+        padding: 10px 10px 100px 10px;
+        border-right: 1px #A0A0A0 solid;
+        border-bottom: 1px #A0A0A0 solid;
+        scrollbar-color: #A0A0A0 #0C1A32;
+        box-sizing: border-box;
+      }
+      #left ul {
+        margin-bottom: 10px;
+        margin-left: 20px;
+        color: white;
+      }
+        #left li.chapter_capital {
+          margin-left: -20px;
+          color: orange;
+        }
+        #left li.chapter_link.curruntPosition {
+          text-decoration: underline;
+          color: lime;
+        }
+        #left li.chapter_link.filtered {
+          opacity: 0.3;
+        }
+        #left li.chapter_link:hover {
+          cursor: pointer;
+          text-decoration: underline;
+          color: lime;
+        }
+        #left li sup {
+          margin-left: 5px;
+          font-style: italic;
+          font-weight: bold;
+        }
+          #left li sup.re {color: red;}
+          #left li sup.spl {color: skyblue;}
+      #batch {
+        position: fixed;
+        left: 0;top: calc(100% - 80px);
+        z-index: 1;
+
+        width: 500px;
+        height: 80px;
+        padding: 10px 20px;
+        border-right: 1px #A0A0A0 solid;
+        box-sizing: border-box;
+
+        font-size: 20px;
+        line-height: 30px;
+      }
+        #batch select {
+          margin:2.5px 0;
+          width: 100%;
+          height: 25px;
+        }
+      #right {
+        position: fixed;
+        left: 500px;top: 0;
+        z-index: 1;
+
+        width: calc(100% - 500px);
+        height: 100%;
+        box-sizing: border-box;
+        background-color: #0C1A32;
+        scrollbar-color: #A0A0A0 #0C1A32;
+      }
+        #load {
+          position: absolute;
+          left: 0;top: 0;
+          z-index: 2;
+
+          width: 100%;
+          height: 100%;
+          padding: 5px 10px;
+          background-color: #0C1A32;
+          box-sizing: border-box;
+
+          font-size: 20px;
+        }
+          #load .subtitle {
+            margin-top: 50px;
+          }
+          #load .settingsContainer {
+            width: 100%;
+            height:auto;
+            padding: 10px;
+            background-color:#112547;
+            border-radius: 10px;
+            box-sizing: border-box;
+          }
+          #load .referHeader {
+            color: orange;
+          }
+          #load select {
+            width: 150px;
+          }
+          #load button#run {
+            background-image: linear-gradient(#f7f8fa ,#e7e9ec);
+            border-color: #adb1b8 #a2a6ac #8d9096;
+            border-style: solid;
+            border-width: 1px;
+            border-radius: 3px;
+            box-shadow: rgba(255,255,255,.6) 0 1px 0 inset;
+            box-sizing: border-box;
+            color: #0f1111;
+            cursor: pointer;
+            font-family: "Amazon Ember",Arial,sans-serif;
+            font-size: 14px;
+            height: 29px;
+            font-size: 13px;
+            outline: 0;
+            overflow: hidden;
+            padding: 0 11px;
+            text-align: center;
+            text-decoration: none;
+            text-overflow: ellipsis;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            white-space: nowrap;
+          }
+          
+          #load .notReady {
+            opacity: 0.2;
+            pointer-events: none;
+            user-select: none;
+          }
+
+        #top {
+          overflow-y: scroll;
+
+          width: 100%;
+          height: calc(100% - 80px);
+          padding: 5px 10px;
+          border-bottom: 1px #A0A0A0 solid;
+          box-sizing: border-box;
+        }
+          #top .chatCover {
+            display: grid;
+            grid-template-columns: 3.5fr 1fr;
+
+            margin-left:100px;
+            margin-bottom: 20px;
+            width: 800px;
+            height: auto;
+            border-radius: 10px;
+
+            font-weight: bold;
+          }
+                #top .chatCover {
+                  background-color: #112547;
+                  color: #FFFFFF;
+                }
+              #top .chatCover.hidden {
+                display: none;
+              }
+              #top .chatCover.siriux {
+                margin-left:0px;
+              }
+                #top .chatCover.siriux {
+                  background-color: oklab(40.719% 0.07699 -0.12662);
+                  color: #FFFFFF;
+                }
+                #top .chatCover.reused {
+                  background-color: orange;
+                  color: black;
+                }
+                #top .chatCover.split {
+                  background-color: #00BFFF;
+                  color: black;
+                }
+                #top .chatCover.reused.split {
+                  background: linear-gradient(to right,#00BFFF, orange);
+                  color: black;
+                }
+              #top .chatCover.filtered {
+                opacity: 0.3;
+              }
+            #top .chatName {
+              grid-row: 1 / 1;
+              grid-column: 1 / 1;
+              
+              width:auto;
+              height: 30px;
+              padding:5px 10px;
+              border: 1px #A0A0A0 solid;
+              border-top-left-radius: 10px;
+              box-sizing: border-box;
+
+              font-size: 15px;
+              line-height: 20px;
+            }
+              #top .chatName .left {float:left;}
+              #top .chatName .right {float:right;}
+            #top .chatId {
+              grid-row: 1 / 1;
+              grid-column: 2 / 2;
+
+              height: 30px;
+              padding:5px 10px;
+              border: 1px #A0A0A0 solid;
+              border-top-right-radius: 10px;
+              box-sizing: border-box;
+
+              font-size: 15px;
+              line-height: 20px;
+            }
+            #top .chatText {
+              grid-row: 2 / 2;
+              grid-column: 1 / span 3;
+
+              height: auto;
+                min-height:30px;
+              padding:10px 10px;
+              border: 1px #A0A0A0 solid;
+              box-sizing: border-box;
+
+              font-size: 20px;
+              line-height: 25px;
+              word-break: keep-all;
+            }
+              #top .chatText hr {
+                margin:5px 0;
+                border-top:1px #A0A0A0 solid;
+              }
+              #top .chatText .small {
+                font-size: 15px;
+                line-height: 20px;
+              }
+            #top .chatSource {
+              grid-row: 3 / 3;
+              grid-column: 1 / span 3;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
+              opacity: 0.6;
+
+              height: 30px;
+              padding:5px 10px;
+              border: 1px #A0A0A0 solid;
+              border-bottom-left-radius: 10px;
+              border-bottom-right-radius: 10px;
+              box-sizing: border-box;
+
+              font-size: 10px;
+              line-height: 10px;
+            }
+        #bottom {
+          width: 100%;
+          height: 70px;
+          padding: 10px 20px;
+          box-sizing: border-box;
+        }
+          #bottom_location {
+            width: 100%;
+            height: 40px;
+
+            font-size: 30px;
+            line-height: 40px;
+          }
+          #bottom_info {
+            width: 100%;
+            height: 20px;
+
+            font-size: 15px;
+            line-height: 20px;
+            color: #b0b0b0;
+          }
+    </style>
+  </head>
+  <body>
+
+    <div id="left"></div>
+      <div id="batch"><select id="batchSelect" disabled></select><br>▲ Batch Filter</div>
+      <div id="right">
+        <div id="load">
+          <span class="subtitle">1. Load a Excel file (.xlsx / It opens a first sheet.)</span>
+          <br>
+          <input id="loadFile" type="file">
+          <br>
+          <br>
+          <span class="subtitle">2. Column Settings</span>
+          <div class="settingsContainer">
+            1) <span class='referHeader'>"Main ID"</span> Column : <select data-type="id" data-necessary="yes" class="columnSettings"></select> ("Column A" at Localisation sheet)
+            <br>
+            2) <span class='referHeader'>"Sub ID"</span> Column : <select data-type="subId" data-necessary="no" class="columnSettings"></select> ("Column B" at Localisation sheet)
+            <br>
+            3) <span class='referHeader'>"Script Source & Variable"</span> Column : <select data-type="source" data-necessary="yes" class="columnSettings"></select>
+            <br>
+            4) <span class='referHeader'>"Batch"</span> Column : <select data-type="batch" data-necessary="yes" class="columnSettings"></select>
+            <br>
+            5) <span class='referHeader'>"Text 1st"</span> Column : <select data-type="text1" data-necessary="yes" class="columnSettings"></select>
+            <br>
+            6) <span class='referHeader'>"Text 2nd"</span> Column : <select data-type="text2" data-necessary="no" class="columnSettings"></select>
+            <br>
+            7) <span class='referHeader'>"Text 3rd"</span> Column : <select data-type="text3" data-necessary="no" class="columnSettings"></select>
+            <br>
+            8) <span class='referHeader'>"Speaker 1"</span> Column : <select data-type="speaker1" data-necessary="yes" class="columnSettings"></select>
+            <br>
+            9) <span class='referHeader'>"Speaker 2"</span> Column : <select data-type="speaker2" data-necessary="yes" class="columnSettings"></select>
+            <br>
+            10) <span class='referHeader'>"Listener"</span> Column : <select data-type="listener" data-necessary="no" class="columnSettings"></select>
+          </div>
+          <br>
+          <span class="subtitle">3. Run!</span>
+          <br>
+          <button id="run" class="notReady" disabled>Run</button>
+        </div>
+        <div id="top"></div>
+        <div id="bottom">
+          <div id="bottom_location">Location : </div>
+          <div id="bottom_info">[Num. 1] : Previous Chapter&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;[Num. 2] : Next Chapter</div>
+        </div>
+      </div>
+    
+  </body>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+  <script>
+
+  (async () => {
+  
+  //변수 세팅
+  let worksheet = undefined//대사집 저장용
+  let header = []
+  let refHeader = {}
+  let pool = {}//데이터 관리 개체 (챕터별로 묶어서 관리)
+  let chapterList = []//챕터 개별 관리 배열
+  let batchObj = {}//배치 개별 관리 배열 (필터용)
+  let location = ""//현재 출력 챕터 정보 (챕터 제목으로 기억)
+  let batchFilter = "all"//Batch 필터 상태 (기본값 : all)
+
+  //함수 : 엑셀 호출해놓기
+  async function initExcel(file) {
+    //대사집 호출
+    var workbook = new ExcelJS.Workbook()
+    await workbook.xlsx.load(file)
+    worksheet = workbook.getWorksheet(1)
+
+    //header 정보 파악
+    worksheet.getRow(1).eachCell(cell => {
+      header.push(cell.address + " : " + (cell.text))
+    })
+
+    //settings에 열 정보 집어넣기
+    document.querySelectorAll(".columnSettings").forEach(dom => {
+      //필수값이 아니면 미선택 option 집어넣기
+      if (dom.dataset.necessary === "no") {
+        let option = document.createElement("option")
+        option.value = "noUse"
+        option.textContent = "** Do not use **"
+        dom.appendChild(option)
+      }
+      header.forEach((headerCell,i) => {
+        let option = document.createElement("option")
+        option.value = (i+1).toString()
+        option.textContent = headerCell
+        dom.appendChild(option)
+      })
+    })
+
+    //localStorage에서 이전 settings 값 불러오기
+    let beforeSetting = localStorage.getItem("ADS_settings")
+    if (beforeSetting !== null) beforeSetting = JSON.parse(beforeSetting)
+    for (let key in beforeSetting) {
+      let dom = document.querySelector('select[data-type="' + key + '"]')
+      if (dom !== null) {
+        for (let i = 0; i < dom.options.length; i++) {
+          if (dom.options[i].value === beforeSetting[key] || parseInt(dom.options[i].value) === beforeSetting[key]) {
+            dom.value = beforeSetting[key]
+            break
+          }
+        }
+      }
+    }
+
+    //실행 버튼 표시 및 클릭
+    document.getElementById("run").classList.remove("notReady")
+    document.getElementById("run").disabled = false
+    document.getElementById("run").onclick = async () => {
+      //참고 헤더 저장
+      document.querySelectorAll(".columnSettings").forEach(async (dom) => {
+        let value = dom.value
+        if (!isNaN(value)) value = parseInt(value)
+        refHeader[dom.dataset.type] = value
+      })
+
+    //localStorage에서 이전 settings 값 저장하기
+    localStorage.setItem("ADS_settings", JSON.stringify(refHeader))
+      
+      //기동
+      await init()
+      
+      //기동 이후 이전 대화 열기
+      let localLocation = localStorage.getItem("ADS_location")
+      if (localLocation !== null) {
+        await chat(localLocation)//출력 : 기존 대화목록
+      } else {
+        await chat(chapterList[0])//출력 : 첫 대화목록
+      }
+    }
+  }
+
+  //함수 : 기동
+  async function init() {
+
+    //파일 입력창 제거
+    document.getElementById("load").style.display = "none"
+
+    //대화목록 추출 및 정리
+    rows = worksheet.eachRow((row,i) => {
+      //대화목록 여부 파악
+      source = row.getCell(refHeader.source).text
+      if (source !== null && source.indexOf("DialogueNodeData") >= 0) {//스크립트소스에 해당 문구가 있으면 대화목록에 해당함
+        //대화목록 정리
+        let sceneArr = [], tempArr = []
+        tempArr = source.split("\n")
+        tempArr.forEach(line => {
+          if (line.indexOf("DialogueNodeData") >= 0 && line.split("/").length === 3) {//스크립트소스 내 각 줄에서 해당 문구가 있는 것만 추출
+            sceneArr.push(line)
+          }
+        })
+        let scene = []
+        sceneArr.forEach(dialogue => {
+          let scenePart = []
+          scenePart[0] = dialogue.split("/")[0].replaceAll("Character_","")
+          scenePart[1] = parseInt(dialogue.split("/")[2])
+          scene.push(scenePart)
+        })
+        //대화목록 입력
+        scene.forEach(part => {
+          if (pool[part[0]] === undefined) pool[part[0]] = []//챕터가 없으면 챕터 생성 
+          let chapter = {}
+          chapter.num = part[1]
+          chapter.id = row.getCell(refHeader.id).text
+          chapter.subId = ""
+            if (refHeader.subId !== "noUse" && row.getCell(refHeader.subId).text !== "-1") {
+              chapter.id += " - " + row.getCell(refHeader.subId).text
+              chapter.subId = row.getCell(refHeader.subId).text
+            }
+          chapter.sources = sceneArr.join("&nbsp;&nbsp;/&nbsp;&nbsp;").replaceAll("/DialogueNodeData/"," - ")
+          chapter.speaker = row.getCell(refHeader.speaker1).text
+          chapter.listener = ""
+            if (chapter.speaker === null) chapter.speaker = ""//화자가 null일 경우, 공백으로 변경
+            if (row.getCell(refHeader.speaker2).text !== null && row.getCell(refHeader.speaker2).text.length > 0) {
+              chapter.speaker += "(" + row.getCell(refHeader.speaker2).text + ")"
+            }
+            if (refHeader.listener !== "noUse" && row.getCell(refHeader.listener).text !== null && row.getCell(refHeader.listener).text.length > 0) {
+              chapter.speaker += " → " + row.getCell(refHeader.listener).text
+              chapter.listener = row.getCell(refHeader.listener).text
+            }
+          chapter.text = row.getCell(refHeader.text1).text
+            if (refHeader.text2 !== "noUse") chapter.text += "<hr><span class='small'>" + row.getCell(refHeader.text2).text + "</span>"
+            if (refHeader.text3 !== "noUse") chapter.text += "<hr><span class='small'>" + row.getCell(refHeader.text3).text + "</span>"
+            chapter.text = chapter.text.replaceAll("\n","<br>")
+          chapter.batch = row.getCell(refHeader.batch).text
+            if (chapter.batch === "" || chapter.batch === null) chapter.batch = "(None)"
+          chapter.reused = 0
+            if (scene.length >= 2) chapter.reused = 1//scene이 둘 이상이면 재사용된 대화
+          pool[part[0]].push(chapter)
+        })
+      }
+    })
+
+    //대화목록 챕터 정렬 및 라인 관리
+    let longestLine = 1
+    for (let chapterName in pool) {
+      //챕터 목록 생성
+      chapterList.push(chapterName)
+      //라인 정렬
+      pool[chapterName].sort((a,b) => {
+        return (a.num - b.num)
+      })
+      //라인이 가장 많은 챕터 찾기 - 대화틀 생성 참고용
+      pool[chapterName].forEach((line,i) => {
+        if (longestLine < i + 1) longestLine = i + 1
+      })
+    }
+    //대화목록 챕터 정렬
+    chapterList.sort((a,b) => {
+      return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'})
+    })
+
+    //대화목록 목록 생성
+    let chapterCapital = ""
+    let list = document.createElement("ul"), item
+    chapterList.forEach((chapterName,i) => {
+      if (chapterCapital != chapterName[0]) {
+        chapterCapital = chapterName[0]
+        item = document.createElement("li")
+        item.classList.add("chapter_capital")
+        item.innerHTML = "&lt; " + chapterCapital + " &gt;"
+        list.appendChild(item)
+      }
+      item = document.createElement("li")
+      item.id = "Chapter_" + chapterName
+      item.classList.add("chapter_link")
+      item.dataset.batch = "[]"//batch 필터용 : 사전에 세팅해두기
+      item.innerHTML = chapterName
+      list.appendChild(item)
+    })
+    document.getElementById("left").appendChild(list)
+
+    //재사용 및 Sub ID 추적 및 표시
+    for (let chap in pool) {
+      pool[chap].forEach((line,i) => {
+        if (line.reused > 0 || line.subId !== "") {
+          let targetDom = document.querySelector("#Chapter_" + chap)
+          if (line.reused > 0) {
+            if (targetDom.innerHTML.indexOf("Re") < 0) targetDom.innerHTML += "<sup class='re'>Re</sup>"
+          }
+          if (line.subId !== "") {
+            if (targetDom.innerHTML.indexOf("Spl") < 0) targetDom.innerHTML += "<sup class='spl'>Spl</sup>"
+          }
+        }
+      })
+    }
+
+    //대화목록 목록 클릭 이벤트
+    document.querySelectorAll(".chapter_link").forEach(dom => {
+      dom.onclick = () => {
+        chat(dom.id.replace("Chapter_",""))
+      }
+    })
+
+    //대화틀 생성 : 가장 긴 대화목록 수량만큼 제작
+    for (let i = 0 ; i < longestLine ; i++) {
+      //틀
+      let chatCover = document.createElement("div")
+      chatCover.id = "chatCover" + "_" + i.toString()
+      chatCover.classList.add("chatCover")
+      chatCover.classList.add("hidden")
+      chatCover.dataset.batch = ""//batch 필터용 : 사전에 세팅해두기
+        //이름
+        let chatName = document.createElement("div")
+        chatName.id = "chatName" + "_" + i.toString()
+        chatName.className = "chatName"
+        chatCover.appendChild(chatName)
+        //ID
+        let chatId = document.createElement("div")
+        chatId.id = "chatId" + "_" + i.toString()
+        chatId.className = "chatId"
+        chatCover.appendChild(chatId)
+        //텍스트
+        let chatText = document.createElement("div")
+        chatText.id = "chatText" + "_" + i.toString()
+        chatText.className = "chatText"
+        chatCover.appendChild(chatText)
+        //스크립트소스
+        let chatSource = document.createElement("div")
+        chatSource.id = "chatSource" + "_" + i.toString()
+        chatSource.className = "chatSource"
+        chatCover.appendChild(chatSource)
+      document.getElementById("top").appendChild(chatCover)
+    }
+
+    //Batch 필터 요소 생성
+    let batchOption
+    for (let chapterName in pool) {
+      pool[chapterName].forEach((line,i) => {
+        //batchObj 기록, batch 필터 batchSelect에 추가
+        if (batchObj[line.batch] === undefined) {
+          //첫 batch일 경우, 사전에 "All", "(none)" 추가
+          if (Object.keys(batchObj).length === 0) {
+            batchOption = new Option("** All **", "all")
+            document.getElementById("batchSelect").appendChild(batchOption)
+            batchOption = new Option("(None)", "(None)")
+            document.getElementById("batchSelect").appendChild(batchOption)
+          }
+          batchObj[line.batch] = []
+        }
+        //특정 Batch가 포함된 챕터명을 batchObj에 기록하기 (없을 경우에만)
+        if (batchObj[line.batch].indexOf(chapterName) < 0) {
+          batchObj[line.batch].push(chapterName)
+          //대화목록의 챕터에도 등록해두기 (없을 테니)
+          let parsedData = JSON.parse(document.getElementById("Chapter_" + chapterName).dataset.batch)
+          parsedData.push(line.batch)
+          document.getElementById("Chapter_" + chapterName).dataset.batch = JSON.stringify(parsedData)
+        }
+        //batchSelect에 해당 batch 추가 (없을 경우에만)
+        if (document.getElementById('batchSelect').querySelector('[value="' + line.batch + '"]') === null) {
+          batchOption = new Option(line.batch, line.batch)
+          document.getElementById("batchSelect").appendChild(batchOption)
+        }
+      })
+    }
+    //Batch 필터 활성화
+    document.getElementById("batchSelect").disabled = false
+    //필터 변경 시 : 필터 적용(대상이 아니면 반투명) - 대화목록 및 대화창
+    document.getElementById("batchSelect").onchange = (event) => {
+      setFilter(event.target.value, "both")
+    }
+  }
+
+  //함수 : 출력
+  async function chat(destination) {
+    //대화목록 텍스트 수정 (가능하지 않으면 미실시)
+    if (document.getElementById("Chapter_" + location.toString()) !== null) {
+      document.getElementById("Chapter_" + location.toString()).innerHTML = document.getElementById("Chapter_" + location.toString()).innerHTML.replaceAll(" ◇◆◇","")
+      document.getElementById("Chapter_" + location.toString()).classList.remove("curruntPosition")
+    }
+    //지정한 대화목록이 없으면 실행 종료 (필터나 업데이트 등으로 인해 지정할 대상이 없는 경우)
+    if (document.getElementById("Chapter_" + destination.toString()) === null) {
+      return
+    }
+    document.getElementById("Chapter_" + destination.toString()).innerHTML += " ◇◆◇"
+    document.getElementById("Chapter_" + destination.toString()).classList.add("curruntPosition")
+    //위치 정보 수정, 출력위치 임시저장
+    location = destination
+    localStorage.setItem("ADS_location", location)
+    //대화목록 스크롤(화면을 벗어날 경우)
+    let dest = document.getElementById("Chapter_" + destination.toString())
+    let rect = dest.getBoundingClientRect()
+    let viewHeight = document.getElementById("left").clientHeight
+    if (rect.top < 80) {
+      document.getElementById("left").scrollTop = dest.offsetTop - 80
+    } else if (rect.bottom > viewHeight - 80) {
+      document.getElementById("left").scrollTop = dest.offsetTop - viewHeight + 80
+    }
+    //모든 대화틀 숨기기
+    for (let chatCover of document.getElementById("top").childNodes) {
+      chatCover.classList.add("hidden")
+      chatCover.classList.remove("Siriux")
+      chatCover.classList.remove("reused")
+      chatCover.classList.remove("split")
+      chatCover.classList.remove("filtered")
+    }
+    //대화 정보 불러오기
+    let infoArr = pool[location]
+    //대화 타이틀 표시
+    document.getElementById("bottom_location").innerHTML = "Location : " + location
+    //대화 구성
+    infoArr.forEach((info,i) => {
+      document.getElementById("chatCover_" + i.toString()).classList.remove("hidden")
+        if (info.speaker.indexOf("Siriux") >= 0 && info.listener.indexOf("Siriux") < 0 ) document.getElementById("chatCover_" + i.toString()).classList.add("Siriux")
+        if (info.reused === 1) document.getElementById("chatCover_" + i.toString()).classList.add("reused")
+        if (info.subId !== "") document.getElementById("chatCover_" + i.toString()).classList.add("split")
+        document.getElementById("chatCover_" + i.toString()).dataset.batch = info.batch//batch 입력용 : 사전에 세팅해두기
+      document.getElementById("chatName_" + i.toString()).innerHTML = "<span class='left'>" + info.speaker + "</span>"
+      document.getElementById("chatId_" + i.toString()).innerHTML = "ID : " + info.id.toString()
+        if (info.reused === 1) document.getElementById("chatName_" + i.toString()).innerHTML += "<span class='right'>(Reused)</span>"
+        if (info.subId !== "") document.getElementById("chatName_" + i.toString()).innerHTML += "<span class='right'>(Split)</span>"
+      document.getElementById("chatText_" + i.toString()).innerHTML = info.text
+      document.getElementById("chatSource_" + i.toString()).innerHTML = "Batch : " + info.batch + "<br>" + info.sources
+    })
+    //대화창 스크롤
+    document.getElementById("top").scrollTop = 0
+
+    //출력 완료 후 대화창 필터 적용
+    setFilter(document.getElementById("batchSelect").value, "top")
+  }
+
+
+  //함수 : Batch 필터링
+  async function setFilter(filterValue, target) {
+    //필터 적용 : 대화목록(left / both)
+    if (target === "left" || target === "both") {
+      document.querySelectorAll(".chapter_link").forEach(dom => {
+        //all : 전부 필터 제거
+        if (filterValue === "all") {
+          dom.classList.remove("filtered")
+        //그외 : 해당 batch가 없는 것 필터 적용
+        } else {
+          let batchArr = JSON.parse(dom.dataset.batch)
+          if (batchArr.indexOf(filterValue) >= 0) {
+            dom.classList.remove("filtered")
+          } else {
+            dom.classList.add("filtered")
+          }
+        }
+      })
+    }
+
+    //필터 적용 : 대화창(top / both)
+    if (target === "top" || target === "both") {
+      document.querySelectorAll(".chatCover").forEach(dom => {
+        //all : 전부 필터 제거
+        if (filterValue === "all") {
+          dom.classList.remove("filtered")
+        //그외 : 해당 batch가 없는 것 필터 적용
+        } else {
+          let batchArr = dom.dataset.batch
+          if (batchArr === filterValue) {
+            dom.classList.remove("filtered")
+          } else {
+            dom.classList.add("filtered")
+          }
+        }
+      })
+    }
+  }
+
+    
+  window.onload = async () =>{
+
+    try {
+
+      document.getElementById("loadFile").onchange = async (e) => {
+        document.getElementById("loadFile").classList.add("notReady")//파일 업로드 비활성화
+        document.getElementById("loadFile").disabled = true
+        await initExcel(e.target.files[0])//엑셀 호출
+      }
+
+      document.addEventListener('keydown', async (event) => {
+        let locationNum = chapterList.indexOf(location)
+        if (locationNum < 0) return
+        const keyName = event.key
+        if (keyName === '2') {
+          if (locationNum < chapterList.length - 1) {
+            chat(chapterList[locationNum + 1])
+          }
+        } else if (keyName === '1') {
+          if (locationNum > 0) {
+            chat(chapterList[locationNum - 1])
+          }
+        }
+      })
+
+    } catch(err) {
+      alert("※ ERROR! Please report it to the developer.\n" + err)
+    }
+  }
+
+  })()
+
+  </script>
+</html>
