@@ -333,11 +333,11 @@
             <br>
             7) <span class='referHeader'>"Text 3rd"</span> Column : <select data-type="text3" data-necessary="no" class="columnSettings"></select>
             <br>
-            8) <span class='referHeader'>"Speaker 1"</span> Column : <select data-type="speaker1" data-necessary="yes" class="columnSettings"></select>
+            8) <span class='referHeader'>"Speaker"</span> Column : <select data-type="speaker" data-necessary="yes" class="columnSettings"></select>
             <br>
-            9) <span class='referHeader'>"Speaker 2"</span> Column : <select data-type="speaker2" data-necessary="yes" class="columnSettings"></select>
+            9) <span class='referHeader'>"Listener"</span> Column : <select data-type="listener" data-necessary="no" class="columnSettings"></select>
             <br>
-            10) <span class='referHeader'>"Listener"</span> Column : <select data-type="listener" data-necessary="no" class="columnSettings"></select>
+            10) <span class='referHeader'>"Note"</span> Column : <select data-type="note" data-necessary="no" class="columnSettings"></select>
           </div>
           <br>
           <span class="subtitle">3. Run!</span>
@@ -478,15 +478,16 @@
               chapter.subId = row.getCell(refHeader.subId).text
             }
           chapter.sources = sceneArr.join("&nbsp;&nbsp;/&nbsp;&nbsp;").replaceAll("/DialogueNodeData/"," - ")
-          chapter.speaker = row.getCell(refHeader.speaker1).text
+          chapter.speaker = row.getCell(refHeader.speaker).text
           chapter.listener = ""
             if (chapter.speaker === null) chapter.speaker = ""//화자가 null일 경우, 공백으로 변경
-            if (row.getCell(refHeader.speaker2).text !== null && row.getCell(refHeader.speaker2).text.length > 0) {
-              chapter.speaker += "(" + row.getCell(refHeader.speaker2).text + ")"
-            }
             if (refHeader.listener !== "noUse" && row.getCell(refHeader.listener).text !== null && row.getCell(refHeader.listener).text.length > 0) {
               chapter.speaker += " → " + row.getCell(refHeader.listener).text
               chapter.listener = row.getCell(refHeader.listener).text
+            }
+            if (refHeader.note !== "noUse" && row.getCell(refHeader.note).text !== null && row.getCell(refHeader.note).text.length > 0) {
+              chapter.speaker += " (" + row.getCell(refHeader.note).text + ")"
+              chapter.note = row.getCell(refHeader.note).text
             }
           chapter.text = row.getCell(refHeader.text1).text
             if (refHeader.text2 !== "noUse") chapter.text += "<hr><span class='small'>" + row.getCell(refHeader.text2).text + "</span>"
